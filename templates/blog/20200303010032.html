@@ -1,0 +1,18 @@
+<h2>塩基配列の長さを取得</h2>
+
+<pre>
+# CountSequence.spvm
+package CountSequence {
+  sub count : int ($sequence : string) {
+    return length $sequence;
+  }
+}
+</pre>
+
+<pre>
+use SPVM "CountSequence";
+my $sequence = "ATGCAGCCC";
+say CountSequence->count($sequence);
+# Output
+# 9
+</pre>
