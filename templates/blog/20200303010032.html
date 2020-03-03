@@ -1,5 +1,20 @@
 <h2>塩基配列の長さを取得</h2>
 
+塩基配列の長さを取得するにはlength文を使用します。
+
+<pre>
+length 文字列互換型;
+</pre>
+
+塩基配列から、文字列の長さを取り出すサンプルです。
+
+<pre>
+my $sequence = "ATGCAGCCC";
+my $length = length $sequence;
+</pre>
+
+<h3>塩基配列の長さを取得するPerlから呼び出すサンプル</h3>
+
 <pre>
 # CountSequence.spvm
 package CountSequence {
@@ -10,9 +25,12 @@ package CountSequence {
 </pre>
 
 <pre>
+use strict;
+use warnings;
 use SPVM "CountSequence";
+
 my $sequence = "ATGCAGCCC";
-say CountSequence->count($sequence);
+print CountSequence->count($sequence), "\n";
 # Output
 # 9
 </pre>
