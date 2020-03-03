@@ -16,10 +16,18 @@ my $length = length $sequence;
 <h3>塩基配列の長さを取得するPerlから呼び出すサンプル</h3>
 
 <pre>
-# CountSequence.spvm
-package CountSequence {
-  sub count : int ($sequence : string) {
-    return length $sequence;
+# Sequence.spvm
+package Sequence {
+  has sequence : string;
+
+  sub new : Sequence ($sequence : string) {
+    my $obj = new Sequence;
+    $obj->{sequence} = $sequence;
+    return $obj;
+  }
+
+  sub length : int ($self : self) {
+    return length $self->{sequence};
   }
 }
 </pre>
@@ -27,10 +35,10 @@ package CountSequence {
 <pre>
 use strict;
 use warnings;
-use SPVM "CountSequence";
+use SPVM "Sequence";
 
-my $sequence = "ATGCAGCCC";
-print CountSequence->count($sequence), "\n";
+my $sequence = Sequence->new("ATGCAGCCC");
+print $sequence->length, "\n";
 # Output
 # 9
 </pre>
