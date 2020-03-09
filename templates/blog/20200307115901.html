@@ -1,13 +1,5 @@
 <h2>塩基配列の中のA,G,C,Tのそれぞれの割合を求める。GC含量を求める。</h2>
 
-<h3>tr operator (Perl)</h3>
-
-特定の文字種の数え上げには tr operator が便利です。
-
-<pre>
-my $count = $sequence =~ tr/A//;
-</pre>
-
 <h3>塩基配列からA,G,C,Tそれぞれの割合を求める。GC含量を求める。(Perl)</h3>
 
 <pre>
@@ -17,24 +9,40 @@ use warnings;
 my $sequence = 'ATGCAGCCCCGGGTACTCC';
 my $length = length $sequence;
 
-my $Acount = $sequence =~ tr/A//;
-my $Gcount = $sequence =~ tr/G//;
-my $Ccount = $sequence =~ tr/C//;
-my $Tcount = $sequence =~ tr/T//;
+my $adenine_count  = 0;
+my $guanine_count  = 0;
+my $cytosine_count = 0;
+my $thymine_count  = 0;
 
-my $Apercent = $Acount / $length * 100;
-my $Gpercent = $Gcount / $length * 100;
-my $Cpercent = $Ccount / $length * 100;
-my $Tpercent = $Tcount / $length * 100;
+while ($sequence =~ /(.)/g) {
+  my $char = $1;
+  if ($char eq 'A') {
+    $adenine_count++;
+  }
+  elsif ($char eq 'G') {
+    $guanine_count++;
+  }
+  elsif ($char eq 'C') {
+    $cytosine_count++;
+  }
+  elsif ($char eq 'T') {
+    $thymine_count++;
+  }
+}
 
-my $GCcontent = ($Gcount + $Ccount) / $length * 100;
+my $adenine_percent  = $adenine_count  / $length * 100;
+my $guanine_percent  = $guanine_count  / $length * 100;
+my $cytosine_percent = $cytosine_count / $length * 100;
+my $thymine_percent  = $thymine_count  / $length * 100;
 
-print "Percentage of A: $Apercent%\n";
-print "Percentage of G: $Gpercent%\n";
-print "Percentage of C: $Cpercent%\n";
-print "Percentage of T: $Tpercent%\n";
+my $gc_content = ($guanine_count + $cytosine_count) / $length * 100;
 
-print "GCcontent: $GCcontent%\n";
+print "Percentage of A: $adenine_percent%\n";
+print "Percentage of G: $guanine_percent%\n";
+print "Percentage of C: $cytosine_percent%\n";
+print "Percentage of T: $thymine_percent%\n";
+
+print "GC content: $gc_content%\n";
 __END__
 # Output
 Percentage of A: 15.7894736842105%
@@ -52,33 +60,49 @@ package Sequence {
     my $sequence = "ATGCAGCCCCGGGTACTCC";
     my $length = length $sequence;
 
-    my $Acount = 0;
-    my $Gcount = 0;
-    my $Ccount = 0;
-    my $Tcount = 0;
+    my $adenine_count  = 0;
+    my $guanine_count  = 0;
+    my $cytosine_count = 0;
+    my $thymine_count  = 0;
 
     for (my $i = 0; $i < $length; ++$i) {
-      $Acount += (int)($sequence->[$i] == 'A');
-      $Gcount += (int)($sequence->[$i] == 'G');
-      $Ccount += (int)($sequence->[$i] == 'C');
-      $Tcount += (int)($sequence->[$i] == 'T');
+      my $char = $sequence->[$i];
+      if ($char == 'A') {
+        $adenine_count++;
+      }
+      elsif ($char == 'G') {
+        $guanine_count++;
+      }
+      elsif ($char == 'C') {
+        $cytosine_count++;
+      }
+      elsif ($char == 'T') {
+        $thymine_count++;
+      }
     }
 
-    my $Apercent = 100.0 * $Acount / $length;
-    my $Gpercent = 100.0 * $Gcount / $length;
-    my $Cpercent = 100.0 * $Ccount / $length;
-    my $Tpercent = 100.0 * $Tcount / $length;
+    my $adenine_percent  = 100.0 * $adenine_count  / $length;
+    my $guanine_percent  = 100.0 * $guanine_count  / $length;
+    my $cytosine_percent = 100.0 * $cytosine_count / $length;
+    my $thymine_percent  = 100.0 * $thymine_count  / $length;
 
-    my $GCcontent = 100.0 * ($Gcount + $Ccount) / $length;
+    my $gc_content = 100.0 * ($guanine_count + $cytosine_count) / $length;
 
-    print "Percentage of A: $Apercent%\n";
-    print "Percentage of G: $Gpercent%\n";
-    print "Percentage of C: $Cpercent%\n";
-    print "Percentage of T: $Tpercent%\n";
+    print "Percentage of A: $adenine_percent%\n";
+    print "Percentage of G: $guanine_percent%\n";
+    print "Percentage of C: $cytosine_percent%\n";
+    print "Percentage of T: $thymine_percent%\n";
 
-    print "GCcontent: $GCcontent%\n";
+    print "GC content: $gc_content%\n";
   }
 }
+__END__
+$ perl -I. -e 'use SPVM "Sequence"; Sequence->run;'
+Percentage of A: 15.7895%
+Percentage of G: 26.3158%
+Percentage of C: 42.1053%
+Percentage of T: 15.7895%
+GC content: 68.4211%
 </pre>
 
 <h3>塩基配列からA,G,C,Tそれぞれの割合を求める。GC含量を求める。(PerlからSPVM)</h3>
@@ -89,31 +113,41 @@ package Sequence {
   sub percentages : double[] ($sequence : string) {
     my $length = length $sequence;
 
-    my $Acount = 0;
-    my $Gcount = 0;
-    my $Ccount = 0;
-    my $Tcount = 0;
+    my $adenine_count  = 0;
+    my $guanine_count  = 0;
+    my $cytosine_count = 0;
+    my $thymine_count  = 0;
 
     for (my $i = 0; $i < $length; ++$i) {
-      $Acount += (int)($sequence->[$i] == 'A');
-      $Gcount += (int)($sequence->[$i] == 'G');
-      $Ccount += (int)($sequence->[$i] == 'C');
-      $Tcount += (int)($sequence->[$i] == 'T');
+      my $char = $sequence->[$i];
+      if ($char == 'A') {
+        $adenine_count++;
+      }
+      elsif ($char == 'G') {
+        $guanine_count++;
+      }
+      elsif ($char == 'C') {
+        $cytosine_count++;
+      }
+      elsif ($char == 'T') {
+        $thymine_count++;
+      }
     }
 
-    my $Apercent = 100.0 * $Acount / $length;
-    my $Gpercent = 100.0 * $Gcount / $length;
-    my $Cpercent = 100.0 * $Ccount / $length;
-    my $Tpercent = 100.0 * $Tcount / $length;
+    my $adenine_percent  = 100.0 * $adenine_count  / $length;
+    my $guanine_percent  = 100.0 * $guanine_count  / $length;
+    my $cytosine_percent = 100.0 * $cytosine_count / $length;
+    my $thymine_percent  = 100.0 * $thymine_count  / $length;
 
-    my $GCcontent = 100.0 * ($Gcount + $Ccount) / $length;
+    my $gc_content = 100.0 * ($guanine_count + $cytosine_count) / $length;
 
-    return [$Apercent, $Gpercent, $Cpercent, $Tpercent, $GCcontent];
+    return [$adenine_percent, $guanine_percent, $cytosine_percent, $thymine_percent, $gc_content];
   }
 }
 </pre>
 
 <pre>
+# sequence.pl
 use strict;
 use warnings;
 use SPVM 'Sequence';
@@ -123,17 +157,24 @@ my $sequence = 'ATGCAGCCCCGGGTACTCC';
 my $spvm_array = Sequence->percentages($sequence);
 my $percentages_ref = $spvm_array->to_elems;
 
-my $Apercent = $percentages_ref->[0];
-my $Gpercent = $percentages_ref->[1];
-my $Cpercent = $percentages_ref->[2];
-my $Tpercent = $percentages_ref->[3];
+my $adenine_percent  = $percentages_ref->[0];
+my $guanine_percent  = $percentages_ref->[1];
+my $cytosine_percent = $percentages_ref->[2];
+my $thymine_percent  = $percentages_ref->[3];
 
-my $GCcontent = $percentages_ref->[4];
+my $gc_content = $percentages_ref->[4];
 
-print "Percentage of A: $Apercent%\n";
-print "Percentage of G: $Gpercent%\n";
-print "Percentage of C: $Cpercent%\n";
-print "Percentage of T: $Tpercent%\n";
+print "Percentage of A: $adenine_percent%\n";
+print "Percentage of G: $guanine_percent%\n";
+print "Percentage of C: $cytosine_percent%\n";
+print "Percentage of T: $thymine_percent%\n";
 
-print "GCcontent: $GCcontent%\n";
+print "GC content: $gc_content%\n";
+__END__
+$ perl -I. sequence.pl
+Percentage of A: 15.7894736842105%
+Percentage of G: 26.3157894736842%
+Percentage of C: 42.1052631578947%
+Percentage of T: 15.7894736842105%
+GC content: 68.4210526315789%
 </pre>
