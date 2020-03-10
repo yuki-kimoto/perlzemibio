@@ -1,6 +1,10 @@
-<h2>塩基配列の中のA,G,C,Tのそれぞれの割合を求める。GC含量を求める。</h2>
+<h2>塩基配列からA,G,C,Tそれぞれの割合とGC含量を求める</h2>
 
-<h3>塩基配列からA,G,C,Tそれぞれの割合を求める。GC含量を求める。(Perl)</h3>
+塩基配列からA,G,C,Tそれぞれの割合とGC含量を求めてみましょう。
+
+<h3>塩基配列からA,G,C,Tそれぞれの割合とGC含量を求める(Perl)</h3>
+
+塩基配列からA,G,C,Tそれぞれの割合とGC含量をPerlのプログラムで求めてみましょう。
 
 <pre>
 use strict;
@@ -43,8 +47,11 @@ print "Percentage of C: $cytosine_percent%\n";
 print "Percentage of T: $thymine_percent%\n";
 
 print "GC content: $gc_content%\n";
-__END__
-# Output
+</pre>
+
+出力結果。
+
+<pre>
 Percentage of A: 15.7894736842105%
 Percentage of G: 26.3157894736842%
 Percentage of C: 42.1052631578947%
@@ -52,7 +59,10 @@ Percentage of T: 15.7894736842105%
 GCcontent: 68.4210526315789%
 </pre>
 
+
 <h3>塩基配列からA,G,C,Tそれぞれの割合を求める。GC含量を求める。(SPVM)</h3>
+
+塩基配列からA,G,C,Tそれぞれの割合とGC含量をSPVMのプログラムで求めてみましょう。
 
 <pre>
 package Sequence {
@@ -96,7 +106,11 @@ package Sequence {
     print "GC content: $gc_content%\n";
   }
 }
-__END__
+</pre>
+
+出力結果。
+
+<pre>
 $ perl -I. -e 'use SPVM "Sequence"; Sequence->run;'
 Percentage of A: 15.7895%
 Percentage of G: 26.3158%
@@ -105,7 +119,10 @@ Percentage of T: 15.7895%
 GC content: 68.4211%
 </pre>
 
+
 <h3>塩基配列からA,G,C,Tそれぞれの割合を求める。GC含量を求める。(PerlからSPVM)</h3>
+
+塩基配列からA,G,C,Tそれぞれの割合とGC含量をSPVMのプログラムで求めて、Perlから呼び出してみましょう。
 
 <pre>
 # Sequence.spvm
@@ -170,7 +187,11 @@ print "Percentage of C: $cytosine_percent%\n";
 print "Percentage of T: $thymine_percent%\n";
 
 print "GC content: $gc_content%\n";
-__END__
+</pre>
+
+出力結果。
+
+<pre>
 $ perl -I. sequence.pl
 Percentage of A: 15.7894736842105%
 Percentage of G: 26.3157894736842%
