@@ -13,17 +13,15 @@ use warnings;
 my $sequence = 'ATGCAGCCCCGGGTACTCC';
 my $length = length $sequence;
 
-my %complement = (
-  A => 'T',
-  G => 'C',
-  C => 'G',
-  T => 'A',
-);
-
 my $result = '';
 while ($sequence =~ /(.)/g) {
   my $char = $1;
-  $result = "$complement{$char}$result";
+  my $complement;
+  if ($char eq 'A') { $complement = 'T'; }
+  if ($char eq 'G') { $complement = 'C'; }
+  if ($char eq 'C') { $complement = 'G'; }
+  if ($char eq 'T') { $complement = 'A'; }
+  $result = "$complement$result";
 }
 
 print "$result\n";
@@ -42,24 +40,19 @@ GGAGTACCCGGGGCTGCAT
 
 <pre>
 package Sequence {
-  use SPVM::Hash;
-
   sub run : void () {
     my $sequence = "ATGCAGCCCCGGGTACTCC";
     my $length = length $sequence;
 
-    my $complement = SPVM::Hash->newa([(object)
-      A => 'T',
-      G => 'C',
-      C => 'G',
-      T => 'A',
-    ]);
-
     my $reverse_complement = new byte[$length];
     for (my $i = 0; $i < $length; ++$i) {
-      my $key = (string)[ $sequence->[$i] ];
-      my $byte_obj = (SPVM::Byte)$complement->get($key);
-      $reverse_complement->[$length - $i - 1] = $byte_obj->val;
+      my $char = $sequence->[$i];
+      my $complement : byte;
+      if ($char == 'A') { $complement = 'T'; }
+      if ($char == 'G') { $complement = 'C'; }
+      if ($char == 'C') { $complement = 'G'; }
+      if ($char == 'T') { $complement = 'A'; }
+      $reverse_complement->[$length - $i - 1] = $complement;
     }
     print((string)$reverse_complement . "\n");
   }
@@ -81,23 +74,18 @@ GGAGTACCCGGGGCTGCAT
 <pre>
 # Sequence.spvm
 package Sequence {
-  use SPVM::Hash;
-
   sub reverse_complement : string ($sequence : string) {
     my $length = length $sequence;
 
-    my $complement = SPVM::Hash->newa([(object)
-      A => 'T',
-      G => 'C',
-      C => 'G',
-      T => 'A',
-    ]);
-
     my $reverse_complement = new byte[$length];
     for (my $i = 0; $i < $length; ++$i) {
-      my $key = (string)[ $sequence->[$i] ];
-      my $byte_obj = (SPVM::Byte)$complement->get($key);
-      $reverse_complement->[$length - $i - 1] = $byte_obj->val;
+      my $char = $sequence->[$i];
+      my $complement : byte;
+      if ($char == 'A') { $complement = 'T'; }
+      if ($char == 'G') { $complement = 'C'; }
+      if ($char == 'C') { $complement = 'G'; }
+      if ($char == 'T') { $complement = 'A'; }
+      $reverse_complement->[$length - $i - 1] = $complement;
     }
 
     my $result = (string)$reverse_complement;
