@@ -1,0 +1,115 @@
+<h2>塩基配列を逆相補鎖に変換する</h2>
+
+塩基配列から逆相補鎖を求めてみましょう。
+
+<h3>塩基配列を逆相補鎖に変換する(Perl)</h3>
+
+塩基配列から逆相補鎖をPerlのプログラムで求めてみましょう。
+
+<pre>
+use strict;
+use warnings;
+
+my $sequence = 'ATGCAGCCCCGGGTACTCC';
+my $length = length $sequence;
+
+my $result = '';
+while ($sequence =~ /(.)/g) {
+  my $char = $1;
+  my $complement;
+  if ($char eq 'A') { $complement = 'T'; }
+  if ($char eq 'G') { $complement = 'C'; }
+  if ($char eq 'C') { $complement = 'G'; }
+  if ($char eq 'T') { $complement = 'A'; }
+  $result = "$complement$result";
+}
+
+print "$result\n";
+</pre>
+
+出力結果。
+
+<pre>
+GGAGTACCCGGGGCTGCAT
+</pre>
+
+
+<h3>塩基配列を逆相補鎖に変換する(SPVM)</h3>
+
+塩基配列から逆相補鎖をSPVMのプログラムで求めてみましょう。
+
+<pre>
+package Sequence {
+  sub run : void () {
+    my $sequence = "ATGCAGCCCCGGGTACTCC";
+    my $length = length $sequence;
+
+    my $reverse_complement = new byte[$length];
+    for (my $i = 0; $i < $length; ++$i) {
+      my $char = $sequence->[$i];
+      my $complement : byte;
+      if ($char == 'A') { $complement = 'T'; }
+      if ($char == 'G') { $complement = 'C'; }
+      if ($char == 'C') { $complement = 'G'; }
+      if ($char == 'T') { $complement = 'A'; }
+      $reverse_complement->[$length - $i - 1] = $complement;
+    }
+    print((string)$reverse_complement . "\n");
+  }
+}
+</pre>
+
+出力結果。
+
+<pre>
+$ perl -I. -e 'use SPVM "Sequence"; Sequence->run;'
+GGAGTACCCGGGGCTGCAT
+</pre>
+
+
+<h3>塩基配列を逆相補鎖に変換する(PerlからSPVM)</h3>
+
+塩基配列から逆相補鎖をSPVMのプログラムで求めて、Perlから呼び出してみましょう。
+
+<pre>
+# Sequence.spvm
+package Sequence {
+  sub reverse_complement : string ($sequence : string) {
+    my $length = length $sequence;
+
+    my $reverse_complement = new byte[$length];
+    for (my $i = 0; $i < $length; ++$i) {
+      my $char = $sequence->[$i];
+      my $complement : byte;
+      if ($char == 'A') { $complement = 'T'; }
+      if ($char == 'G') { $complement = 'C'; }
+      if ($char == 'C') { $complement = 'G'; }
+      if ($char == 'T') { $complement = 'A'; }
+      $reverse_complement->[$length - $i - 1] = $complement;
+    }
+
+    my $result = (string)$reverse_complement;
+
+    return $result;
+  }
+}
+</pre>
+
+<pre>
+# make_complement.pl
+use strict;
+use warnings;
+use SPVM 'Sequence';
+
+my $sequence = 'ATGCAGCCCCGGGTACTCC';
+my $result = Sequence->reverse_complement($sequence);
+
+print "$result\n";
+</pre>
+
+出力結果。
+
+<pre>
+$ perl -I. make_complement.pl
+GGAGTACCCGGGGCTGCAT
+</pre>
